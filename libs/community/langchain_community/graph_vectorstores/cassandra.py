@@ -4,6 +4,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Iterable,
+    Iterator,
     List,
     Optional,
     Type,
@@ -12,16 +13,44 @@ from typing import (
 from langchain_core._api import beta
 from langchain_core.documents import Document
 from langchain_core.embeddings import Embeddings
-from langchain_core.graph_vectorstores.base import (
-    GraphVectorStore,
-    Node,
-    nodes_to_documents,
-)
+from langchain_core.graph_vectorstores.base import GraphVectorStore
+from langchain_core.graph_vectorstores.links import METADATA_LINKS_KEY, Link
 
 from langchain_community.utilities.cassandra import SetupMode
 
 if TYPE_CHECKING:
     from cassandra.cluster import Session
+    from ragstack_knowledge_store import Node
+
+
+def _documents_to_nodes(documents: Iterable[Document]) -> Iterator[Node]:
+    from ragstack_knowledge_store import Node
+
+    for doc in documents:
+        metadata = doc.metadata.copy()
+        links = metadata.pop(METADATA_LINKS_KEY, [])
+        yield Node(
+            id=doc.id,
+            metadata=metadata,
+            text=doc.page_content,
+            links=set(links),
+        )
+
+
+def _nodes_to_documents(nodes: Iterable[Node]) -> Iterator[Document]:
+    for node in nodes:
+        metadata = node.metadata.copy()
+        metadata[METADATA_LINKS_KEY] = [
+            # Convert the core `Link` (from the node) back to the local `Link`.
+            Link(kind=link.kind, direction=link.direction, tag=link.tag)
+            for link in node.links
+        ]
+
+        yield Document(
+            id=node.id,
+            page_content=node.text,
+            metadata=metadata,
+        )
 
 
 @beta()
@@ -46,7 +75,7 @@ class CassandraGraphVectorStore(GraphVectorStore):
         """
         try:
             from ragstack_knowledge_store import EmbeddingModel, graph_store
-        except (ImportError, ModuleNotFoundError):
+        except ImportError:
             raise ImportError(
                 "Could not import ragstack_knowledge_store python package. "
                 "Please install it with `pip install ragstack-ai-knowledge-store`."
@@ -84,12 +113,13 @@ class CassandraGraphVectorStore(GraphVectorStore):
     def embeddings(self) -> Optional[Embeddings]:
         return self._embedding
 
-    def add_nodes(
+    def add_documents(
         self,
-        nodes: Iterable[Node],
+        documents: Iterable[Document],
         **kwargs: Any,
-    ) -> Iterable[str]:
-        return self.store.add_nodes(nodes)
+    ) -> List[str]:
+        nodes = _documents_to_nodes(documents)
+        return list(self.store.add_nodes(nodes))
 
     @classmethod
     def from_texts(
@@ -98,11 +128,12 @@ class CassandraGraphVectorStore(GraphVectorStore):
         embedding: Embeddings,
         metadatas: Optional[List[dict]] = None,
         ids: Optional[Iterable[str]] = None,
+        links: Optional[Iterable[Link]] = None,
         **kwargs: Any,
     ) -> "CassandraGraphVectorStore":
         """Return CassandraGraphVectorStore initialized from texts and embeddings."""
         store = cls(embedding, **kwargs)
-        store.add_texts(texts, metadatas, ids=ids)
+        store.add_texts(texts, metadatas, ids=ids, links=links)
         return store
 
     @classmethod
@@ -110,13 +141,12 @@ class CassandraGraphVectorStore(GraphVectorStore):
         cls: Type["CassandraGraphVectorStore"],
         documents: Iterable[Document],
         embedding: Embeddings,
-        ids: Optional[Iterable[str]] = None,
         **kwargs: Any,
     ) -> "CassandraGraphVectorStore":
         """Return CassandraGraphVectorStore initialized from documents and
         embeddings."""
         store = cls(embedding, **kwargs)
-        store.add_documents(documents, ids=ids)
+        store.add_documents(documents)
         return store
 
     def similarity_search(
@@ -132,7 +162,7 @@ class CassandraGraphVectorStore(GraphVectorStore):
         self, embedding: List[float], k: int = 4, **kwargs: Any
     ) -> List[Document]:
         nodes = self.store.similarity_search(embedding, k=k)
-        return list(nodes_to_documents(nodes))
+        return list(_nodes_to_documents(nodes))
 
     def traversal_search(
         self,
@@ -143,7 +173,7 @@ class CassandraGraphVectorStore(GraphVectorStore):
         **kwargs: Any,
     ) -> Iterable[Document]:
         nodes = self.store.traversal_search(query, k=k, depth=depth)
-        return nodes_to_documents(nodes)
+        return _nodes_to_documents(nodes)
 
     def mmr_traversal_search(
         self,
@@ -166,4 +196,4 @@ class CassandraGraphVectorStore(GraphVectorStore):
             lambda_mult=lambda_mult,
             score_threshold=score_threshold,
         )
-        return nodes_to_documents(nodes)
+        return _nodes_to_documents(nodes)

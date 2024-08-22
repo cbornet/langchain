@@ -1,59 +1,46 @@
 import pytest
 
 from langchain_core.documents import Document
-from langchain_core.graph_vectorstores.base import (
-    Node,
-    _documents_to_nodes,
-    _texts_to_nodes,
-)
+from langchain_core.graph_vectorstores.base import _texts_to_documents
 from langchain_core.graph_vectorstores.links import Link
 
 
-def test_texts_to_nodes() -> None:
-    assert list(_texts_to_nodes(["a", "b"], [{"a": "b"}, {"c": "d"}], ["a", "b"])) == [
-        Node(id="a", metadata={"a": "b"}, text="a"),
-        Node(id="b", metadata={"c": "d"}, text="b"),
+def test_texts_to_documents() -> None:
+    link1 = [Link.incoming(kind="hyperlink", tag="http://b")]
+    link2 = [Link.outgoing(kind="url", tag="http://c")]
+    assert list(
+        _texts_to_documents(
+            ["a", "b"], [{"a": "b"}, {"c": "d"}], ["a", "b"], [link1, link2]
+        )
+    ) == [
+        Document(id="a", metadata={"a": "b", "links": link1}, page_content="a"),
+        Document(id="b", metadata={"c": "d", "links": link2}, page_content="b"),
     ]
-    assert list(_texts_to_nodes(["a", "b"], None, ["a", "b"])) == [
-        Node(id="a", metadata={}, text="a"),
-        Node(id="b", metadata={}, text="b"),
-    ]
-    assert list(_texts_to_nodes(["a", "b"], [{"a": "b"}, {"c": "d"}], None)) == [
-        Node(metadata={"a": "b"}, text="a"),
-        Node(metadata={"c": "d"}, text="b"),
+    assert list(_texts_to_documents(["a", "b"], None, ["a", "b"], [link1, link2])) == [
+        Document(id="a", metadata={"links": link1}, page_content="a"),
+        Document(id="b", metadata={"links": link2}, page_content="b"),
     ]
     assert list(
-        _texts_to_nodes(
-            ["a"],
-            [{"links": {Link.incoming(kind="hyperlink", tag="http://b")}}],
-            None,
-        )
-    ) == [Node(links=[Link.incoming(kind="hyperlink", tag="http://b")], text="a")]
-    with pytest.raises(ValueError):
-        list(_texts_to_nodes(["a", "b"], None, ["a"]))
-    with pytest.raises(ValueError):
-        list(_texts_to_nodes(["a", "b"], [{"a": "b"}], None))
-    with pytest.raises(ValueError):
-        list(_texts_to_nodes(["a"], [{"a": "b"}, {"c": "d"}], None))
-    with pytest.raises(ValueError):
-        list(_texts_to_nodes(["a"], None, ["a", "b"]))
-
-
-def test_documents_to_nodes() -> None:
-    documents = [
-        Document(
-            id="a",
-            page_content="some text a",
-            metadata={"links": [Link.incoming(kind="hyperlink", tag="http://b")]},
-        ),
-        Document(id="b", page_content="some text b", metadata={"c": "d"}),
+        _texts_to_documents(["a", "b"], [{"a": "b"}, {"c": "d"}], None, [link1, link2])
+    ) == [
+        Document(metadata={"a": "b", "links": link1}, page_content="a"),
+        Document(metadata={"c": "d", "links": link2}, page_content="b"),
     ]
-    assert list(_documents_to_nodes(documents)) == [
-        Node(
-            id="a",
-            metadata={},
-            links=[Link.incoming(kind="hyperlink", tag="http://b")],
-            text="some text a",
-        ),
-        Node(id="b", metadata={"c": "d"}, text="some text b"),
+    assert list(
+        _texts_to_documents(["a", "b"], [{"a": "b"}, {"c": "d"}], ["a", "b"], None)
+    ) == [
+        Document(id="a", metadata={"a": "b", "links": []}, page_content="a"),
+        Document(id="b", metadata={"c": "d", "links": []}, page_content="b"),
     ]
+    with pytest.raises(ValueError):
+        list(_texts_to_documents(["a", "b"], None, ["a"], None))
+    with pytest.raises(ValueError):
+        list(_texts_to_documents(["a", "b"], [{"a": "b"}], None, None))
+        with pytest.raises(ValueError):
+            list(_texts_to_documents(["a", "b"], None, None, [link1]))
+    with pytest.raises(ValueError):
+        list(_texts_to_documents(["a"], [{"a": "b"}, {"c": "d"}], None, None))
+    with pytest.raises(ValueError):
+        list(_texts_to_documents(["a"], None, ["a", "b"], None))
+    with pytest.raises(ValueError):
+        list(_texts_to_documents(["a"], None, None, [link1, link2]))
