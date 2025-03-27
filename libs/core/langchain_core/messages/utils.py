@@ -465,7 +465,8 @@ def filter_messages(
     """  # noqa: E501
     messages = convert_to_messages(messages)
     filtered: list[BaseMessage] = []
-    for msg in messages:
+    for message in messages:
+        msg = message
         if (
             (exclude_names and msg.name in exclude_names)
             or (exclude_types and _is_message_type(msg, exclude_types))
@@ -504,7 +505,7 @@ def filter_messages(
                         )
                     ]
 
-                msg = msg.model_copy(  # noqa: PLW2901
+                msg = msg.model_copy(
                     update={"tool_calls": tool_calls, "content": content}
                 )
             elif (
