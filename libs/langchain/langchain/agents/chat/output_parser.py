@@ -39,7 +39,6 @@ class ChatOutputParser(AgentOutputParser):
             OutputParserException: If the output could not be parsed.
             ValueError: If the action could not be found.
         """
-
         includes_answer = FINAL_ANSWER_ACTION in text
         try:
             found = self.pattern.search(text)

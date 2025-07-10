@@ -31,7 +31,6 @@ class ConvoOutputParser(AgentOutputParser):
         Returns:
             An AgentAction or AgentFinish object.
         """
-
         if f"{self.ai_prefix}:" in text:
             return AgentFinish(
                 {"output": text.split(f"{self.ai_prefix}:")[-1].strip()},

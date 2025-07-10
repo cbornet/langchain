@@ -55,7 +55,6 @@ def create_conversational_retrieval_agent(
     Returns:
         An agent executor initialized appropriately
     """
-
     if remember_intermediate_steps:
         memory: BaseMemory = AgentTokenBufferMemory(
             memory_key=memory_key,

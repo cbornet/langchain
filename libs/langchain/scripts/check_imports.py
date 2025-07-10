@@ -1,5 +1,4 @@
-"""
-Quickly verify that a list of Python files can be loaded by the Python interpreter
+"""Quickly verify that a list of Python files can be loaded by the Python interpreter
 without raising any errors. Ran before running more expensive tests. Useful in
 Makefiles.
 

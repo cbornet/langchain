@@ -33,22 +33,17 @@ class RegexMatchStringEvaluator(StringEvaluator):
 
     @property
     def requires_input(self) -> bool:
-        """
-        This evaluator does not require input.
-        """
+        """This evaluator does not require input."""
         return False
 
     @property
     def requires_reference(self) -> bool:
-        """
-        This evaluator requires a reference.
-        """
+        """This evaluator requires a reference."""
         return True
 
     @property
     def input_keys(self) -> list[str]:
-        """
-        Get the input keys.
+        """Get the input keys.
 
         Returns:
             List[str]: The input keys.
@@ -57,8 +52,7 @@ class RegexMatchStringEvaluator(StringEvaluator):
 
     @property
     def evaluation_name(self) -> str:
-        """
-        Get the evaluation name.
+        """Get the evaluation name.
 
         Returns:
             str: The evaluation name.
@@ -72,8 +66,7 @@ class RegexMatchStringEvaluator(StringEvaluator):
         reference: str,
         **kwargs: Any,
     ) -> dict:
-        """
-        Evaluate the regex match between the prediction and the reference.
+        """Evaluate the regex match between the prediction and the reference.
 
         Args:
             prediction (str): The prediction string.

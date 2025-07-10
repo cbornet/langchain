@@ -170,7 +170,8 @@ def _wrap_in_chain_factory(
     dataset_name: str = "<my_dataset>",
 ) -> MCF:
     """Forgive the user if they pass in a chain without memory instead of a chain
-    factory. It's a common mistake. Raise a more helpful error message as well."""
+    factory. It's a common mistake. Raise a more helpful error message as well.
+    """
     if isinstance(llm_or_chain_factory, Chain):
         chain = llm_or_chain_factory
         chain_class = chain.__class__.__name__
@@ -234,6 +235,7 @@ def _get_prompt(inputs: dict[str, Any]) -> str:
 
     Returns:
         A string prompt.
+
     Raises:
         InputFormatError: If the input format is invalid.
     """
@@ -293,6 +295,7 @@ def _get_messages(inputs: dict[str, Any]) -> dict:
 
     Returns:
         A list of chat messages.
+
     Raises:
         InputFormatError: If the input format is invalid.
     """
@@ -607,8 +610,7 @@ def _load_run_evaluators(
     run_inputs: Optional[list[str]],
     run_outputs: Optional[list[str]],
 ) -> list[RunEvaluator]:
-    """
-    Load run evaluators from a configuration.
+    """Load run evaluators from a configuration.
 
     Args:
         config: Configuration for the run evaluators.
@@ -690,6 +692,7 @@ async def _arun_llm(
 
     Returns:
         The LLMResult or ChatResult.
+
     Raises:
         ValueError: If the LLM type is unsupported.
         InputFormatError: If the input format is invalid.
@@ -840,8 +843,7 @@ def _run_llm(
     input_mapper: Optional[Callable[[dict], Any]] = None,
     metadata: Optional[dict[str, Any]] = None,
 ) -> Union[str, BaseMessage]:
-    """
-    Run the language model on the example.
+    """Run the language model on the example.
 
     Args:
         llm: The language model to run.
@@ -851,6 +853,7 @@ def _run_llm(
         input_mapper: function to map to the inputs dictionary from an Example
     Returns:
         The LLMResult or ChatResult.
+
     Raises:
         ValueError: If the LLM type is unsupported.
         InputFormatError: If the input format is invalid.
@@ -940,8 +943,7 @@ def _run_llm_or_chain(
     llm_or_chain_factory: MCF,
     input_mapper: Optional[Callable[[dict], Any]] = None,
 ) -> Union[dict, str, LLMResult, ChatResult]:
-    """
-    Run the Chain or language model synchronously.
+    """Run the Chain or language model synchronously.
 
     Args:
         example: The example to run.

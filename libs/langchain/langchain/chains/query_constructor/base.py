@@ -74,8 +74,7 @@ class StructuredQueryOutputParser(BaseOutputParser[StructuredQuery]):
         allowed_attributes: Optional[Sequence[str]] = None,
         fix_invalid: bool = False,  # noqa: FBT001,FBT002
     ) -> StructuredQueryOutputParser:
-        """
-        Create a structured query output parser from components.
+        """Create a structured query output parser from components.
 
         Args:
             allowed_comparators: allowed comparators

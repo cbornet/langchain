@@ -18,8 +18,7 @@ from langchain.schema import RUN_KEY
 
 
 def _load_rapidfuzz() -> Any:
-    """
-    Load the RapidFuzz library.
+    """Load the RapidFuzz library.
 
     Raises:
         ImportError: If the rapidfuzz library is not installed.
@@ -68,8 +67,7 @@ class _RapidFuzzChainMixin(Chain):
 
     @pre_init
     def validate_dependencies(cls, values: dict[str, Any]) -> dict[str, Any]:
-        """
-        Validate that the rapidfuzz library is installed.
+        """Validate that the rapidfuzz library is installed.
 
         Args:
             values (Dict[str, Any]): The input values.
@@ -82,8 +80,7 @@ class _RapidFuzzChainMixin(Chain):
 
     @property
     def output_keys(self) -> list[str]:
-        """
-        Get the output keys.
+        """Get the output keys.
 
         Returns:
             List[str]: The output keys.
@@ -91,8 +88,7 @@ class _RapidFuzzChainMixin(Chain):
         return ["score"]
 
     def _prepare_output(self, result: dict[str, Any]) -> dict[str, Any]:
-        """
-        Prepare the output dictionary.
+        """Prepare the output dictionary.
 
         Args:
             result (Dict[str, Any]): The evaluation results.
@@ -107,8 +103,7 @@ class _RapidFuzzChainMixin(Chain):
 
     @staticmethod
     def _get_metric(distance: str, *, normalize_score: bool = False) -> Callable:
-        """
-        Get the distance metric function based on the distance type.
+        """Get the distance metric function based on the distance type.
 
         Args:
             distance (str): The distance type.
@@ -142,8 +137,7 @@ class _RapidFuzzChainMixin(Chain):
 
     @property
     def metric(self) -> Callable:
-        """
-        Get the distance metric function.
+        """Get the distance metric function.
 
         Returns:
             Callable: The distance metric function.
@@ -154,8 +148,7 @@ class _RapidFuzzChainMixin(Chain):
         )
 
     def compute_metric(self, a: str, b: str) -> float:
-        """
-        Compute the distance between two strings.
+        """Compute the distance between two strings.
 
         Args:
             a (str): The first string.
@@ -172,7 +165,6 @@ class StringDistanceEvalChain(StringEvaluator, _RapidFuzzChainMixin):
 
     Examples
     ----------
-
     >>> from langchain.evaluation import StringDistanceEvalChain
     >>> evaluator = StringDistanceEvalChain()
     >>> evaluator.evaluate_strings(
@@ -192,22 +184,17 @@ class StringDistanceEvalChain(StringEvaluator, _RapidFuzzChainMixin):
 
     @property
     def requires_input(self) -> bool:
-        """
-        This evaluator does not require input.
-        """
+        """This evaluator does not require input."""
         return False
 
     @property
     def requires_reference(self) -> bool:
-        """
-        This evaluator does not require a reference.
-        """
+        """This evaluator does not require a reference."""
         return True
 
     @property
     def input_keys(self) -> list[str]:
-        """
-        Get the input keys.
+        """Get the input keys.
 
         Returns:
             List[str]: The input keys.
@@ -216,8 +203,7 @@ class StringDistanceEvalChain(StringEvaluator, _RapidFuzzChainMixin):
 
     @property
     def evaluation_name(self) -> str:
-        """
-        Get the evaluation name.
+        """Get the evaluation name.
 
         Returns:
             str: The evaluation name.
@@ -229,8 +215,7 @@ class StringDistanceEvalChain(StringEvaluator, _RapidFuzzChainMixin):
         inputs: dict[str, Any],
         run_manager: Optional[CallbackManagerForChainRun] = None,
     ) -> dict[str, Any]:
-        """
-        Compute the string distance between the prediction and the reference.
+        """Compute the string distance between the prediction and the reference.
 
         Args:
             inputs (Dict[str, Any]): The input values.
@@ -247,8 +232,7 @@ class StringDistanceEvalChain(StringEvaluator, _RapidFuzzChainMixin):
         inputs: dict[str, Any],
         run_manager: Optional[AsyncCallbackManagerForChainRun] = None,
     ) -> dict[str, Any]:
-        """
-        Asynchronously compute the string distance between the prediction
+        """Asynchronously compute the string distance between the prediction
             and the reference.
 
         Args:
@@ -274,8 +258,7 @@ class StringDistanceEvalChain(StringEvaluator, _RapidFuzzChainMixin):
         include_run_info: bool = False,
         **kwargs: Any,
     ) -> dict:
-        """
-        Evaluate the string distance between the prediction and the reference.
+        """Evaluate the string distance between the prediction and the reference.
 
         Args:
             prediction (str): The prediction string.
@@ -310,8 +293,7 @@ class StringDistanceEvalChain(StringEvaluator, _RapidFuzzChainMixin):
         include_run_info: bool = False,
         **kwargs: Any,
     ) -> dict:
-        """
-        Asynchronously evaluate the string distance between the
+        """Asynchronously evaluate the string distance between the
             prediction and the reference.
 
         Args:
@@ -339,8 +321,7 @@ class PairwiseStringDistanceEvalChain(PairwiseStringEvaluator, _RapidFuzzChainMi
 
     @property
     def input_keys(self) -> list[str]:
-        """
-        Get the input keys.
+        """Get the input keys.
 
         Returns:
             List[str]: The input keys.
@@ -349,8 +330,7 @@ class PairwiseStringDistanceEvalChain(PairwiseStringEvaluator, _RapidFuzzChainMi
 
     @property
     def evaluation_name(self) -> str:
-        """
-        Get the evaluation name.
+        """Get the evaluation name.
 
         Returns:
             str: The evaluation name.
@@ -362,8 +342,7 @@ class PairwiseStringDistanceEvalChain(PairwiseStringEvaluator, _RapidFuzzChainMi
         inputs: dict[str, Any],
         run_manager: Optional[CallbackManagerForChainRun] = None,
     ) -> dict[str, Any]:
-        """
-        Compute the string distance between two predictions.
+        """Compute the string distance between two predictions.
 
         Args:
             inputs (Dict[str, Any]): The input values.
@@ -382,8 +361,7 @@ class PairwiseStringDistanceEvalChain(PairwiseStringEvaluator, _RapidFuzzChainMi
         inputs: dict[str, Any],
         run_manager: Optional[AsyncCallbackManagerForChainRun] = None,
     ) -> dict[str, Any]:
-        """
-        Asynchronously compute the string distance between two predictions.
+        """Asynchronously compute the string distance between two predictions.
 
         Args:
             inputs (Dict[str, Any]): The input values.
@@ -408,8 +386,7 @@ class PairwiseStringDistanceEvalChain(PairwiseStringEvaluator, _RapidFuzzChainMi
         include_run_info: bool = False,
         **kwargs: Any,
     ) -> dict:
-        """
-        Evaluate the string distance between two predictions.
+        """Evaluate the string distance between two predictions.
 
         Args:
             prediction (str): The first prediction string.
@@ -442,8 +419,7 @@ class PairwiseStringDistanceEvalChain(PairwiseStringEvaluator, _RapidFuzzChainMi
         include_run_info: bool = False,
         **kwargs: Any,
     ) -> dict:
-        """
-        Asynchronously evaluate the string distance between two predictions.
+        """Asynchronously evaluate the string distance between two predictions.
 
         Args:
             prediction (str): The first prediction string.

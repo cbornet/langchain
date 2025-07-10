@@ -49,6 +49,7 @@ def _check_numpy() -> bool:
 
 def _embedding_factory() -> Embeddings:
     """Create an Embeddings object.
+
     Returns:
         Embeddings: The created Embeddings object.
     """
@@ -576,7 +577,7 @@ class PairwiseEmbeddingDistanceEvalChain(
         include_run_info: bool = False,
         **kwargs: Any,
     ) -> dict:
-        """Asynchronously evaluate the embedding distance
+        """Asynchronously evaluate the embedding distance.
 
         between two predictions.
 

@@ -49,7 +49,7 @@ def test_get_action_and_input_newline() -> None:
 def test_get_action_and_input_newline_after_keyword() -> None:
     """Test getting an action and action input from the text
     when there is a new line before the action
-    (after the keywords "Action:" and "Action Input:")
+    (after the keywords "Action:" and "Action Input:").
     """
     llm_output = """
     I can use the `ls` command to list the contents of the directory \
@@ -69,7 +69,7 @@ def test_get_action_and_input_newline_after_keyword() -> None:
 
 def test_get_action_and_input_sql_query() -> None:
     """Test getting the action and action input from the text
-    when the LLM output is a well formed SQL query
+    when the LLM output is a well formed SQL query.
     """
     llm_output = """
     I should query for the largest single shift payment for every unique user.

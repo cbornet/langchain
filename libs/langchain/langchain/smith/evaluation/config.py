@@ -38,7 +38,7 @@ class EvalConfig(BaseModel):
     evaluator_type : EvaluatorType
         The type of evaluator to use.
 
-    Methods
+    Methods:
     -------
     get_kwargs()
         Get the keyword arguments for the evaluator configuration.

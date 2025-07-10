@@ -309,7 +309,6 @@ class OpenAIAssistantRunnable(RunnableSerializable[dict, OutputType]):
                 Otherwise, will return OpenAI types
                 Union[List[ThreadMessage], List[RequiredActionFunctionToolCall]].
         """
-
         config = ensure_config(config)
         callback_manager = CallbackManager.configure(
             inheritable_callbacks=config.get("callbacks"),
@@ -442,7 +441,6 @@ class OpenAIAssistantRunnable(RunnableSerializable[dict, OutputType]):
                 Otherwise, will return OpenAI types
                 Union[List[ThreadMessage], List[RequiredActionFunctionToolCall]].
         """
-
         config = config or {}
         callback_manager = CallbackManager.configure(
             inheritable_callbacks=config.get("callbacks"),

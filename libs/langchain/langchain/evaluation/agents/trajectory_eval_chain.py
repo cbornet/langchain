@@ -238,6 +238,7 @@ The following is the expected answer. Use this to measure correctness:
                 available to the agent.
             output_parser (Optional[TrajectoryOutputParser]): The output parser
                 used to parse the chain output into a score.
+
         Returns:
             TrajectoryEvalChain: The TrajectoryEvalChain object.
         """

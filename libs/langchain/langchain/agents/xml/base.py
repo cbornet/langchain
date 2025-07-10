@@ -116,7 +116,7 @@ def create_xml_agent(
     *,
     stop_sequence: Union[bool, list[str]] = True,
 ) -> Runnable:
-    """Create an agent that uses XML to format its logic.
+    r"""Create an agent that uses XML to format its logic.
 
     Args:
         llm: LLM to use as the agent.
